@@ -1,6 +1,5 @@
 import json
 import re
-
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
@@ -13,8 +12,8 @@ from .serializer import ClassSerializer, BookingsSerializer
 
 @api_view(['GET'])
 def classes(request):
-    all_classes = Class.objects.all() #fetches all the data
-    classes_serializer = ClassSerializer(all_classes, many=True) # serializes the data into Python native types ready for JSON rendering
+    all_classes = Class.objects.all()   #fetches all the data
+    classes_serializer = ClassSerializer(all_classes, many=True)
     return Response({'classes': classes_serializer.data})
 
 
