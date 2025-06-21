@@ -20,3 +20,9 @@ class Instructor(models.Model):
 
     def __str__(self):
         return f"{self.Instructor_name}"
+
+
+class Bookings(models.Model):
+    client_name = models.CharField(max_length=100)
+    client_email = models.EmailField(max_length=250, unique=True)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
