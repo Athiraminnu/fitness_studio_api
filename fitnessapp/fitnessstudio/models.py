@@ -1,10 +1,11 @@
 from django.db import models
+from django.utils import timezone
 
 
 #db table 'Class' for  class details
 class Class(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    time = models.TimeField()
+    time = models.DateTimeField(default=timezone.now)
     available_slots = models.IntegerField()
 
 
@@ -29,3 +30,6 @@ class Bookings(models.Model):
     client_name = models.CharField(max_length=100)
     client_email = models.EmailField(max_length=250)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self. client_name}"

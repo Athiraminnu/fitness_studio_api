@@ -1,4 +1,6 @@
 import json
+import re
+
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
@@ -28,16 +30,16 @@ def bookings(request):
             if not all([clientname, clientemail, class_to_book]):   # check if all required fields are provided
                 return JsonResponse({'Error': 'Missing required fields'}, status=400)
 
-            try:
-                validate_email(clientemail)   # validate the email format
-            except ValidationError:
-                return Response({'Error': 'Invalid email format.'}, status=400)
+            #email validation
+            pattern = r'^[a-z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+            if not re.match(pattern, clientemail):
+                return JsonResponse({'Error': 'invalid email.'}, status=400)
 
             try:
                 class_data = Class.objects.get(id=class_to_book)     # retrieve the class instance by ID(raises exception if not found)
                 available_slots = class_data.available_slots    # get the number of available slots for the class
 
-                      #check if this email already booked this class
+                 #check if this email already booked this class
                 already_booked = Bookings.objects.filter(
                     client_email=clientemail,
                     class_id=class_data
