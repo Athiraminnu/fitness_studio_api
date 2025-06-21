@@ -1,10 +1,9 @@
 import json
-
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Class, Bookings
-from .serializer import ClassSerializer
+from .serializer import ClassSerializer, BookingsSerializer
 
 
 # Create your views here.
@@ -56,3 +55,13 @@ def bookings(request):
             return JsonResponse({'Error': 'Invalid JSON format'}, status=400)
 
     return JsonResponse({'Error': 'Only POST requests are allowed'}, status=405)
+
+
+@api_view(['GET'])
+def bookingData(request):
+    email = request.GET.get('email')
+    if not email:
+        return Response({'Error': 'Email is required.'}, ststus=400)
+    bookings_data = Bookings.objects.filter(client_email=email)
+    bookings_data_serializer = BookingsSerializer(bookings_data, many=True)
+    return Response({'bookings': bookings_data_serializer.data})
