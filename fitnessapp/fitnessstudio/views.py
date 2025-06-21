@@ -37,6 +37,15 @@ def bookings(request):
                 class_data = Class.objects.get(id=class_to_book)     # retrieve the class instance by ID(raises exception if not found)
                 available_slots = class_data.available_slots    # get the number of available slots for the class
 
+                      #check if this email already booked this class
+                already_booked = Bookings.objects.filter(
+                    client_email=clientemail,
+                    class_id=class_data
+                ).exists()
+
+                if already_booked:
+                    return JsonResponse({'Error': 'You have already booked a slot for this class.'}, status=409)
+
                 if available_slots > 0:   # check if slots are available
                     # create a new booking
                     new_booking = Bookings.objects.create(
